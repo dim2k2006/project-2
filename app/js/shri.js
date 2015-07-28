@@ -3,7 +3,7 @@
  * @param {string} url
  * @param {function} callback
  */
-function getData(url, callback) {
+function getData(url, callback, num) {
     var RESPONSES = {
         '/countries': [
             {name: 'Cameroon', continent: 'Africa'},
@@ -37,7 +37,7 @@ function getData(url, callback) {
             return callback('Unknown url');
         }
 
-        callback(null, result);
+        callback(null, result, num);
     }, Math.round(Math.random * 1000));
 }
 
@@ -47,13 +47,21 @@ function getData(url, callback) {
 var requests = ['/countries', '/cities', '/populations'];
 var responses = {};
 
-for (i = 0; i < 3; i++) {
-    var request = requests[i];
-    var callback = function (error, result) {
-        responses[request] = result;
+var callback = function (error, result, num) {
+        console.log(result);
+
+        var name = requests[num];
+
+        responses[name] = result;
+
+        console.log(responses);
+
         var l = [];
-        for (K in responses)
+        for (var K in responses) {
             l.push(K);
+        }
+
+        //console.log(l);
 
         if (l.length == 3) {
             var c = [], cc = [], p = 0;
@@ -83,5 +91,9 @@ for (i = 0; i < 3; i++) {
         }
     };
 
-    getData(request, callback);
+for (i = 0; i < 3; i++) {
+    var request = requests[i];
+    console.log('request '+i+': '+request);
+
+    getData(request, callback, i);
 }
