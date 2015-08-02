@@ -3,7 +3,7 @@
  * @param {string} url
  * @param {function} callback
  */
-function getData(url, callback, num) {
+function getData(url, callback) {
     var RESPONSES = {
         '/countries': [
             {name: 'Cameroon', continent: 'Africa'},
@@ -37,31 +37,47 @@ function getData(url, callback, num) {
             return callback('Unknown url');
         }
 
-        callback(null, result, num);
+        callback(null, result);
     }, Math.round(Math.random * 1000));
 }
 
 /**
  * Ваши изменения ниже
  */
-var requests = ['/countries', '/cities', '/populations'];
-var responses = {};
+var requests = ['/countries', '/cities', '/populations'],
+    responses = {},
+    request = '';
 
-var callback = function (error, result, num) {
-    //console.log(result);
 
-    var name = requests[num];
 
-    responses[name] = result;
+/**
+ * [callback description]
+ * @param  {[type]}   error  [description]
+ * @param  {[type]}   result [description]
+ * @return {Function}        [description]
+ */
+var callback = function (error, result) {
+    if (result[0].continent) {
+        request = '/countries';
+    }
 
-    //console.log(responses);
+    if (result[0].country) {
+        request = '/cities';
+    }
+
+    if (result[0].count) {
+        request = '/populations';
+    }
+
+
+    responses[request] = result;
+    
 
     var l = [];
     for (var K in responses) {
         l.push(K);
     }
 
-    //console.log(l.length);
 
     if (l.length == 3) {
         var c = [], cc = [], p = 0;
@@ -93,11 +109,17 @@ var callback = function (error, result, num) {
     }
 };
 
-for (i = 0; i < 3; i++) {
-    var request = requests[i];
-    //console.log('request '+i+': '+request);
 
-    getData(request, callback, i);
+
+
+/**
+ * loop
+ * @param  {[type]} i [description]
+ * @return {[type]}   [description]
+ */
+for (i = 0; i < 3; i++) {
+    request = requests[i];
+    getData(request, callback);
 }
 
 
@@ -108,12 +130,15 @@ for (i = 0; i < 3; i++) {
 function userDialog(responses) {
     var dialogData = prompt("Введите название страны или города", "Cameroon"),
         cityObject = '',
+        cityName = '',
+        cityCount = 0,
         find = false;
 
     for (i = 0; i < responses['/populations'].length; i++) {
         cityObject = responses['/populations'][i];
         if (cityObject.name === dialogData) {
-            console.log(cityObject.count);
+            cityName = cityObject.name;
+            cityCount = cityObject.count;
             find = true;
         }
     }
@@ -124,6 +149,7 @@ function userDialog(responses) {
             cityObject = responses['/cities'][i];
             if (cityObject.country === dialogData) {
                 dialogData = cityObject.name;
+                cityName = cityObject.country;
             }
         } 
 
@@ -131,9 +157,17 @@ function userDialog(responses) {
         for (i = 0; i < responses['/populations'].length; i++) {
             cityObject = responses['/populations'][i];
             if (cityObject.name === dialogData) {
-                console.log(cityObject.count);
+                cityCount = cityObject.count;
                 find = true;
             }
         }
     }
+
+
+    if (find) {
+        console.log('Total population in ' + cityName + ': ' + cityCount);    
+    } else {
+        console.log('Nothing found for ' + dialogData);
+    }
+    
 }
