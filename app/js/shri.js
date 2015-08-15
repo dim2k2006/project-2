@@ -41,6 +41,8 @@ function getData(url, callback) {
     }, Math.round(Math.random * 1000));
 }
 
+
+
 /**
  * Ваши изменения ниже
  */
@@ -51,10 +53,9 @@ var requests = ['/countries', '/cities', '/populations'],
 
 
 /**
- * [callback description]
- * @param  {[type]}   error  [description]
- * @param  {[type]}   result [description]
- * @return {Function}        [description]
+ * Callback function
+ * @param  {[object]}   error
+ * @param  {[object]}   result
  */
 var callback = function (error, result) {
     if (result[0].continent) {
@@ -111,12 +112,6 @@ var callback = function (error, result) {
 
 
 
-
-/**
- * loop
- * @param  {[type]} i [description]
- * @return {[type]}   [description]
- */
 for (i = 0; i < 3; i++) {
     request = requests[i];
     getData(request, callback);
@@ -125,7 +120,8 @@ for (i = 0; i < 3; i++) {
 
 
 /**
- * User dialog
+ * userDialog function
+ * @param  {[object]} responses
  */
 function userDialog(responses) {
     var dialogData = prompt("Введите название страны или города", "Cameroon"),
@@ -168,6 +164,5 @@ function userDialog(responses) {
         console.log('Total population in ' + cityName + ': ' + cityCount);    
     } else {
         console.log('Nothing found for ' + dialogData);
-    }
-    
+    } 
 }
